@@ -1,0 +1,1614 @@
+{
+    "info":  {
+                 "_postman_id":  "8f7bf2f2-38f4-4cce-a3d3-e35e8a7f8190",
+                 "name":  "Estoril Flow API",
+                 "description":  "Collection oficial da API Estoril Flow ate o estado atual do projeto. Inclui exemplos de request/response para Auth, Products e Orders. Atualize este arquivo a cada novo endpoint implementado.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "authToken",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "productId",
+                         "value":  "1",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "orderId",
+                         "value":  "1",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "orderItemId",
+                         "value":  "1",
+                         "type":  "string"
+                     }
+                 ],
+    "item":  [
+                 {
+                     "name":  "Auth",
+                     "item":  [
+                                  {
+                                      "name":  "Login",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "type":  "text/javascript",
+                                                                       "exec":  [
+                                                                                    "if (pm.response.code === 200) {",
+                                                                                    "  const data = pm.response.json();",
+                                                                                    "  if (data.accessToken) {",
+                                                                                    "    pm.collectionVariables.set(\u0027authToken\u0027, data.accessToken);",
+                                                                                    "  }",
+                                                                                    "}"
+                                                                                ]
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"username\": \"dummy\",\n  \"password\": \"admin123\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/auth",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "auth"
+                                                                           ]
+                                                              },
+                                                      "description":  "Autentica um usuario e retorna JWT com metadados da sessao."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"username\": \"dummy\",\n  \"password\": \"admin123\"\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/auth",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "auth"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"accessToken\": \"\u003cjwt-token\u003e\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 7200,\n  \"issuedAt\": \"2026-04-17T06:00:00Z\",\n  \"expiresAt\": \"2026-04-17T08:00:00Z\",\n  \"user\": {\n    \"id\": 1,\n    \"name\": \"Usuario Dummy\",\n    \"username\": \"dummy\",\n    \"email\": \"dummy@estoril.local\",\n    \"role\": \"ADMIN\"\n  }\n}"
+                                                       },
+                                                       {
+                                                           "name":  "401 Unauthorized",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"username\": \"dummy\",\n  \"password\": \"senha-invalida\"\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/auth",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "auth"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Unauthorized",
+                                                           "code":  401,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:00:00Z\",\n  \"status\": 401,\n  \"error\": \"Unauthorized\",\n  \"message\": \"Invalid username or password\",\n  \"path\": \"/auth\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Auth Me",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "bearer",
+                                                                   "bearer":  [
+                                                                                  {
+                                                                                      "key":  "token",
+                                                                                      "value":  "{{authToken}}",
+                                                                                      "type":  "string"
+                                                                                  }
+                                                                              ]
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/auth/me",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "auth",
+                                                                               "me"
+                                                                           ]
+                                                              },
+                                                      "description":  "Retorna os metadados do usuario autenticado."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "auth":  {
+                                                                                                "type":  "bearer",
+                                                                                                "bearer":  [
+                                                                                                               {
+                                                                                                                   "key":  "token",
+                                                                                                                   "value":  "{{authToken}}",
+                                                                                                                   "type":  "string"
+                                                                                                               }
+                                                                                                           ]
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/auth/me",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "auth",
+                                                                                                            "me"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"name\": \"Usuario Dummy\",\n  \"username\": \"dummy\",\n  \"email\": \"dummy@estoril.local\",\n  \"role\": \"ADMIN\"\n}"
+                                                       },
+                                                       {
+                                                           "name":  "401 Unauthorized",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/auth/me",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "auth",
+                                                                                                            "me"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Unauthorized",
+                                                           "code":  401,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:00:00Z\",\n  \"status\": 401,\n  \"error\": \"Unauthorized\",\n  \"message\": \"Full authentication is required to access this resource\",\n  \"path\": \"/auth/me\"\n}"
+                                                       }
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Products",
+                     "item":  [
+                                  {
+                                      "name":  "Create Product",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Caipirinha\",\n  \"price\": 25.90\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/products",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products"
+                                                                           ]
+                                                              },
+                                                      "description":  "Cria um novo produto ativo."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "201 Created",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"name\": \"Caipirinha\",\n  \"price\": 25.90\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Created",
+                                                           "code":  201,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"name\": \"Caipirinha\",\n  \"price\": 25.90,\n  \"active\": true,\n  \"createdAt\": \"2026-04-17T06:05:00\",\n  \"updatedAt\": \"2026-04-17T06:05:00\"\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Bad Request",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"name\": \"\",\n  \"price\": 0\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:05:00Z\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"name is required\",\n  \"path\": \"/api/products\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "List Products",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/products?active=true\u0026page=0\u0026size=10\u0026sort=name,asc\u0026sort=id,asc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "active",
+                                                                                    "value":  "true"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "name,asc"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "id,asc"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista os produtos de forma paginada. Filtro opcional: active=true|false. Query params de paginação: page, size e sort."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products?active=true\u0026page=0\u0026size=10\u0026sort=name,asc\u0026sort=id,asc",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products"
+                                                                                                        ],
+                                                                                               "query":  [
+                                                                                                             {
+                                                                                                                 "key":  "active",
+                                                                                                                 "value":  "true"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "page",
+                                                                                                                 "value":  "0"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "size",
+                                                                                                                 "value":  "10"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "name,asc"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "id,asc"
+                                                                                                             }
+                                                                                                         ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"name\": \"Agua\",\n      \"price\": 5.00,\n      \"active\": true,\n      \"createdAt\": \"2026-04-17T06:05:00\",\n      \"updatedAt\": \"2026-04-17T06:05:00\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Caipirinha\",\n      \"price\": 25.90,\n      \"active\": true,\n      \"createdAt\": \"2026-04-17T06:06:00\",\n      \"updatedAt\": \"2026-04-17T06:06:00\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 2,\n  \"totalPages\": 1,\n  \"numberOfElements\": 2,\n  \"first\": true,\n  \"last\": true,\n  \"empty\": false\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Product By Id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/products/{{productId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "{{productId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Retorna um produto pelo id."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products/{{productId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products",
+                                                                                                            "{{productId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"name\": \"Caipirinha\",\n  \"price\": 25.90,\n  \"active\": true,\n  \"createdAt\": \"2026-04-17T06:05:00\",\n  \"updatedAt\": \"2026-04-17T06:05:00\"\n}"
+                                                       },
+                                                       {
+                                                           "name":  "404 Not Found",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products/999",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products",
+                                                                                                            "999"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Not Found",
+                                                           "code":  404,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:05:00Z\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Product not found with id 999\",\n  \"path\": \"/api/products/999\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Product",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Caipirinha Especial\",\n  \"price\": 29.90\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/products/{{productId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "{{productId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Atualiza nome e preco do produto."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PUT",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"name\": \"Caipirinha Especial\",\n  \"price\": 29.90\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products/{{productId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products",
+                                                                                                            "{{productId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"name\": \"Caipirinha Especial\",\n  \"price\": 29.90,\n  \"active\": true,\n  \"createdAt\": \"2026-04-17T06:05:00\",\n  \"updatedAt\": \"2026-04-17T06:10:00\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Product Status",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"active\": false\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/products/{{productId}}/status",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "products",
+                                                                               "{{productId}}",
+                                                                               "status"
+                                                                           ]
+                                                              },
+                                                      "description":  "Ativa ou inativa o produto."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PATCH",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"active\": false\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/products/{{productId}}/status",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "products",
+                                                                                                            "{{productId}}",
+                                                                                                            "status"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"name\": \"Caipirinha Especial\",\n  \"price\": 29.90,\n  \"active\": false,\n  \"createdAt\": \"2026-04-17T06:05:00\",\n  \"updatedAt\": \"2026-04-17T06:12:00\"\n}"
+                                                       }
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Orders",
+                     "item":  [
+                                  {
+                                      "name":  "Create Order",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"notes\": \"Sem gelo\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders"
+                                                                           ]
+                                                              },
+                                                      "description":  "Abre uma nova comanda. No estado atual da API, `openedByUserId` pode vir nulo se nao houver autenticacao."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "201 Created",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"notes\": \"Sem gelo\"\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Created",
+                                                           "code":  201,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 0,\n  \"totalAmount\": 0.00,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:20:00\",\n  \"items\": []\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "List Orders",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders?status=OPEN\u0026startDate=2026-04-01\u0026endDate=2026-04-30\u0026page=0\u0026size=10\u0026sort=openedAt,desc\u0026sort=id,desc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "OPEN"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-04-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-04-30"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "openedAt,desc"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "id,desc"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista as comandas de forma paginada. Filtros opcionais: status, startDate e endDate (aplicados sobre openedAt). Query params de paginação: page, size e sort."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders?status=OPEN\u0026startDate=2026-04-01\u0026endDate=2026-04-30\u0026page=0\u0026size=10\u0026sort=openedAt,desc\u0026sort=id,desc",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders"
+                                                                                                        ],
+                                                                                               "query":  [
+                                                                                                             {
+                                                                                                                 "key":  "status",
+                                                                                                                 "value":  "OPEN"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "startDate",
+                                                                                                                 "value":  "2026-04-01"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "endDate",
+                                                                                                                 "value":  "2026-04-30"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "page",
+                                                                                                                 "value":  "0"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "size",
+                                                                                                                 "value":  "10"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "openedAt,desc"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "id,desc"
+                                                                                                             }
+                                                                                                         ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"code\": \"ORD-A1B2C3D4\",\n      \"customerNameOrLabel\": \"Mesa 12\",\n      \"status\": \"OPEN\",\n      \"openedByUserId\": null,\n      \"closedByUserId\": null,\n      \"openedAt\": \"2026-04-17T06:20:00\",\n      \"closedAt\": null,\n      \"notes\": \"Sem gelo\",\n      \"itemCount\": 2,\n      \"totalAmount\": 38.40,\n      \"createdAt\": \"2026-04-17T06:20:00\",\n      \"updatedAt\": \"2026-04-17T06:25:00\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"numberOfElements\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"empty\": false\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Business Rule",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders?startDate=2026-04-30\u0026endDate=2026-04-01",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders"
+                                                                                                        ],
+                                                                                               "query":  [
+                                                                                                             {
+                                                                                                                 "key":  "startDate",
+                                                                                                                 "value":  "2026-04-30"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "endDate",
+                                                                                                                 "value":  "2026-04-01"
+                                                                                                             }
+                                                                                                         ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:20:00Z\",\n  \"status\": 400,\n  \"error\": \"Business rule violation\",\n  \"message\": \"startDate cannot be after endDate\",\n  \"path\": \"/api/orders\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Order By Id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Retorna uma comanda com os itens."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 2,\n  \"totalAmount\": 38.40,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:25:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 2,\n      \"subtotal\": 28.40,\n      \"createdAt\": \"2026-04-17T06:23:00\",\n      \"updatedAt\": \"2026-04-17T06:23:00\"\n    }\n  ]\n}"
+                                                       },
+                                                       {
+                                                           "name":  "404 Not Found",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/999",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "999"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Not Found",
+                                                           "code":  404,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:20:00Z\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Order not found with id 999\",\n  \"path\": \"/api/orders/999\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Order",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"customerNameOrLabel\": \"Mesa 15\",\n  \"notes\": \"Cliente pediu pressa\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Atualiza cabecalho da comanda enquanto ela estiver aberta."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PATCH",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"customerNameOrLabel\": \"Mesa 15\",\n  \"notes\": \"Cliente pediu pressa\"\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 15\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Cliente pediu pressa\",\n  \"itemCount\": 2,\n  \"totalAmount\": 38.40,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:26:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 2,\n      \"subtotal\": 28.40,\n      \"createdAt\": \"2026-04-17T06:23:00\",\n      \"updatedAt\": \"2026-04-17T06:23:00\"\n    }\n  ]\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Business Rule",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PATCH",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"customerNameOrLabel\": \"Mesa 15\",\n  \"notes\": \"Cliente pediu pressa\"\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:26:00Z\",\n  \"status\": 400,\n  \"error\": \"Business rule violation\",\n  \"message\": \"Only open orders can be updated\",\n  \"path\": \"/api/orders/1\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Cancel Order",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/cancel",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "cancel"
+                                                                           ]
+                                                              },
+                                                      "description":  "Cancela uma comanda ainda nao fechada."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PATCH",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/cancel",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "cancel"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 15\",\n  \"status\": \"CANCELLED\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Cliente pediu pressa\",\n  \"itemCount\": 2,\n  \"totalAmount\": 38.40,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:27:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 2,\n      \"subtotal\": 28.40,\n      \"createdAt\": \"2026-04-17T06:23:00\",\n      \"updatedAt\": \"2026-04-17T06:23:00\"\n    }\n  ]\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Add Order Item",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"productId\": 1,\n  \"quantity\": 2\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "items"
+                                                                           ]
+                                                              },
+                                                      "description":  "Adiciona item na comanda usando snapshot atual do produto."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"productId\": 1,\n  \"quantity\": 2\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "items"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 1,\n  \"totalAmount\": 10.00,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:20:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    }\n  ]\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Business Rule",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"productId\": 99,\n  \"quantity\": 2\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "items"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:22:00Z\",\n  \"status\": 400,\n  \"error\": \"Business rule violation\",\n  \"message\": \"Order closed cannot receive new items\",\n  \"path\": \"/api/orders/1/items\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Order Item",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"productId\": 2,\n  \"quantity\": 3\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/{{orderItemId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "items",
+                                                                               "{{orderItemId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Atualiza o item da comanda, recalculando snapshot e subtotal."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "PUT",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"productId\": 2,\n  \"quantity\": 3\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/{{orderItemId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "items",
+                                                                                                            "{{orderItemId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 1,\n  \"totalAmount\": 42.60,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:20:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 3,\n      \"subtotal\": 42.60,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:24:00\"\n    }\n  ]\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Delete Order Item",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/{{orderItemId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "items",
+                                                                               "{{orderItemId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Remove um item da comanda."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "204 No Content",
+                                                           "originalRequest":  {
+                                                                                   "method":  "DELETE",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/{{orderItemId}}",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "items",
+                                                                                                            "{{orderItemId}}"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "No Content",
+                                                           "code":  204,
+                                                           "header":  [
+
+                                                                      ],
+                                                           "body":  ""
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Close Order",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/close",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "close"
+                                                                           ]
+                                                              },
+                                                      "description":  "Fecha a comanda e gera venda/snapshots em transacao unica."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/close",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "close"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"CLOSED\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": \"2026-04-17T06:30:00\",\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 2,\n  \"totalAmount\": 38.40,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:30:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 2,\n      \"subtotal\": 28.40,\n      \"createdAt\": \"2026-04-17T06:23:00\",\n      \"updatedAt\": \"2026-04-17T06:23:00\"\n    }\n  ]\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Business Rule",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/close",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "close"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:30:00Z\",\n  \"status\": 400,\n  \"error\": \"Business rule violation\",\n  \"message\": \"Order cannot be closed without items\",\n  \"path\": \"/api/orders/1/close\"\n}"
+                                                       }
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Sales",
+                     "item":  [
+                                  {
+                                      "name":  "List Sales",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sales?orderId=1\u0026startDate=2026-04-01\u0026endDate=2026-04-30\u0026page=0\u0026size=10\u0026sort=soldAt,desc\u0026sort=id,desc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sales"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "orderId",
+                                                                                    "value":  "1"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-04-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-04-30"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "soldAt,desc"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "id,desc"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista as vendas de forma paginada. Filtros opcionais: orderId, startDate e endDate (aplicados sobre soldAt). Query params de paginação: page, size e sort."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/sales?orderId=1\u0026startDate=2026-04-01\u0026endDate=2026-04-30\u0026page=0\u0026size=10\u0026sort=soldAt,desc\u0026sort=id,desc",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "sales"
+                                                                                                        ],
+                                                                                               "query":  [
+                                                                                                             {
+                                                                                                                 "key":  "orderId",
+                                                                                                                 "value":  "1"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "startDate",
+                                                                                                                 "value":  "2026-04-01"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "endDate",
+                                                                                                                 "value":  "2026-04-30"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "page",
+                                                                                                                 "value":  "0"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "size",
+                                                                                                                 "value":  "10"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "soldAt,desc"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "sort",
+                                                                                                                 "value":  "id,desc"
+                                                                                                             }
+                                                                                                         ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"orderId\": 1,\n      \"totalAmount\": 38.40,\n      \"soldAt\": \"2026-04-17T06:30:00\",\n      \"openedByUserId\": null,\n      \"closedByUserId\": null,\n      \"itemCount\": 2,\n      \"createdAt\": \"2026-04-17T06:30:00\",\n      \"updatedAt\": \"2026-04-17T06:30:00\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"numberOfElements\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"empty\": false\n}"
+                                                       },
+                                                       {
+                                                           "name":  "400 Business Rule",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/sales?startDate=2026-04-30\u0026endDate=2026-04-01",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "sales"
+                                                                                                        ],
+                                                                                               "query":  [
+                                                                                                             {
+                                                                                                                 "key":  "startDate",
+                                                                                                                 "value":  "2026-04-30"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "key":  "endDate",
+                                                                                                                 "value":  "2026-04-01"
+                                                                                                             }
+                                                                                                         ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Bad Request",
+                                                           "code":  400,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:30:00Z\",\n  \"status\": 400,\n  \"error\": \"Business rule violation\",\n  \"message\": \"startDate cannot be after endDate\",\n  \"path\": \"/api/sales\"\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Sale By Id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/sales/1",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "sales",
+                                                                               "1"
+                                                                           ]
+                                                              },
+                                                      "description":  "Retorna uma venda com os itens preservados em snapshot."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/sales/1",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "sales",
+                                                                                                            "1"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"orderId\": 1,\n  \"totalAmount\": 38.40,\n  \"soldAt\": \"2026-04-17T06:30:00\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"itemCount\": 2,\n  \"createdAt\": \"2026-04-17T06:30:00\",\n  \"updatedAt\": \"2026-04-17T06:30:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:30:00\",\n      \"updatedAt\": \"2026-04-17T06:30:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 2,\n      \"subtotal\": 28.40,\n      \"createdAt\": \"2026-04-17T06:30:00\",\n      \"updatedAt\": \"2026-04-17T06:30:00\"\n    }\n  ]\n}"
+                                                       },
+                                                       {
+                                                           "name":  "404 Not Found",
+                                                           "originalRequest":  {
+                                                                                   "method":  "GET",
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/sales/999",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "sales",
+                                                                                                            "999"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "Not Found",
+                                                           "code":  404,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"timestamp\": \"2026-04-17T06:30:00Z\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Sale not found with id 999\",\n  \"path\": \"/api/sales/999\"\n}"
+                                                       }
+                                                   ]
+                                  }
+                              ]
+                 }
+             ]
+}
