@@ -2,7 +2,7 @@
     "info":  {
                  "_postman_id":  "8f7bf2f2-38f4-4cce-a3d3-e35e8a7f8190",
                  "name":  "Estoril Flow API",
-                 "description":  "Collection oficial da API Estoril Flow ate o estado atual do projeto. Inclui exemplos de request/response para Auth, Products e Orders. Atualize este arquivo a cada novo endpoint implementado.",
+                 "description":  "Collection oficial da API Estoril Flow ate o estado atual do projeto. Inclui exemplos de request/response para Auth, Products, Orders, Sales e Store Credits. Atualize este arquivo a cada novo endpoint implementado.",
                  "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
              },
     "variable":  [
@@ -28,6 +28,11 @@
                      },
                      {
                          "key":  "orderItemId",
+                         "value":  "1",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "storeCreditId",
                          "value":  "1",
                          "type":  "string"
                      }
@@ -383,7 +388,7 @@
                                                                                 }
                                                                             ]
                                                               },
-                                                      "description":  "Lista os produtos de forma paginada. Filtro opcional: active=true|false. Query params de paginaÁ„o: page, size e sort."
+                                                      "description":  "Lista os produtos de forma paginada. Filtro opcional: active=true|false. Query params de pagina√ß√£o: page, size e sort."
                                                   },
                                       "response":  [
                                                        {
@@ -760,7 +765,7 @@
                                                                                 }
                                                                             ]
                                                               },
-                                                      "description":  "Lista as comandas de forma paginada. Filtros opcionais: status, startDate e endDate (aplicados sobre openedAt). Query params de paginaÁ„o: page, size e sort."
+                                                      "description":  "Lista as comandas de forma paginada. Filtros opcionais: status, startDate e endDate (aplicados sobre openedAt). Query params de pagina√ß√£o: page, size e sort."
                                                   },
                                       "response":  [
                                                        {
@@ -1438,7 +1443,7 @@
                                                                                 }
                                                                             ]
                                                               },
-                                                      "description":  "Lista as vendas de forma paginada. Filtros opcionais: orderId, startDate e endDate (aplicados sobre soldAt). Query params de paginaÁ„o: page, size e sort."
+                                                      "description":  "Lista as vendas de forma paginada. Filtros opcionais: orderId, startDate e endDate (aplicados sobre soldAt). Query params de pagina√ß√£o: page, size e sort."
                                                   },
                                       "response":  [
                                                        {
@@ -1606,6 +1611,149 @@
                                                                       ],
                                                            "body":  "{\n  \"timestamp\": \"2026-04-17T06:30:00Z\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Sale not found with id 999\",\n  \"path\": \"/api/sales/999\"\n}"
                                                        }
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Store Credits",
+                     "item":  [
+                                  {
+                                      "name":  "Create Store Credit",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"buyerName\": \"Maria Silva\",\n  \"buyerPhone\": \"11999999999\",\n  \"amount\": 51.80,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    }\n  ],\n  \"creditDate\": \"2026-05-12\",\n  \"dueDate\": \"2026-05-20\",\n  \"status\": \"PENDING_PAYMENT\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/store-credits",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "store-credits"
+                                                                           ]
+                                                              },
+                                                      "description":  "Cria um store credit com comprador, valor, datas, status e itens vinculados."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "List Store Credits",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/store-credits?status=PENDING_PAYMENT\u0026startDate=2026-05-01\u0026endDate=2026-05-31\u0026page=0\u0026size=10\u0026sort=creditDate,desc\u0026sort=id,desc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "store-credits"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "PENDING_PAYMENT"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "startDate",
+                                                                                    "value":  "2026-05-01"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "endDate",
+                                                                                    "value":  "2026-05-31"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "creditDate,desc"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "id,desc"
+                                                                                }
+                                                                            ]
+                                                              },
+                                                      "description":  "Lista store credits com pagina√ß√£o e filtros por status e per√≠odo."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Store Credit By Id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/store-credits/{{storeCreditId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "store-credits",
+                                                                               "{{storeCreditId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Retorna os detalhes do store credit com os itens vinculados."
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Store Credit",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"buyerName\": \"Maria Silva\",\n  \"buyerPhone\": \"11999999999\",\n  \"amount\": 51.80,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    }\n  ],\n  \"creditDate\": \"2026-05-12\",\n  \"dueDate\": \"2026-05-25\",\n  \"status\": \"PAID\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/store-credits/{{storeCreditId}}",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "store-credits",
+                                                                               "{{storeCreditId}}"
+                                                                           ]
+                                                              },
+                                                      "description":  "Atualiza o store credit e substitui a lista de itens vinculados."
+                                                  },
+                                      "response":  [
+
                                                    ]
                                   }
                               ]
