@@ -10,8 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.estorilflow.exceptions.BusinessRuleException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +30,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "orders")
 public class Order {
+
+    private static final BigDecimal ZERO = new BigDecimal("0.00");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +68,72 @@ public class Order {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public static Order open(
+            String code,
+            String customerNameOrLabel,
+            Long openedByUserId,
+            String notes,
+            LocalDateTime openedAt
+    ) {
+        return Order.builder()
+                .code(code)
+                .customerNameOrLabel(normalizeNullable(customerNameOrLabel))
+                .status(OrderStatus.OPEN)
+                .openedByUserId(openedByUserId)
+                .openedAt(openedAt)
+                .notes(normalizeNullable(notes))
+                .build();
+    }
+
+    public void updateHeader(String customerNameOrLabel, String notes) {
+        ensureOpenForModification();
+
+        this.customerNameOrLabel = normalizeNullable(customerNameOrLabel);
+        this.notes = normalizeNullable(notes);
+    }
+
+    public void cancel() {
+        if (status == OrderStatus.CLOSED) {
+            throw new BusinessRuleException("Closed order cannot be cancelled");
+        }
+        if (status == OrderStatus.CANCELLED) {
+            throw new BusinessRuleException("Order is already cancelled");
+        }
+
+        this.status = OrderStatus.CANCELLED;
+    }
+
+    public OrderItem createItem(Product product, Integer quantity) {
+        ensureCanReceiveItems();
+        return OrderItem.fromProduct(id, product, quantity);
+    }
+
+    public void updateItem(OrderItem item, Product product, Integer quantity) {
+        ensureCanReceiveItems();
+        item.changeProduct(product, quantity);
+    }
+
+    public void ensureCanChangeItems() {
+        ensureCanReceiveItems();
+    }
+
+    public Sale close(List<OrderItem> items, Long closedByUserId, LocalDateTime closedAt) {
+        ensureCanClose(items);
+
+        this.status = OrderStatus.CLOSED;
+        this.closedByUserId = closedByUserId;
+        this.closedAt = closedAt;
+
+        return Sale.fromClosedOrder(this, totalAmount(items), closedAt);
+    }
+
+    public static BigDecimal totalAmount(List<OrderItem> items) {
+        return items.stream()
+                .map(OrderItem::getSubtotal)
+                .reduce(ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
     @PrePersist
     void prePersist() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
@@ -72,5 +144,41 @@ public class Order {
     @PreUpdate
     void preUpdate() {
         updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+    }
+
+    private void ensureOpenForModification() {
+        if (status != OrderStatus.OPEN) {
+            throw new BusinessRuleException("Only open orders can be updated");
+        }
+    }
+
+    private void ensureCanReceiveItems() {
+        if (status == OrderStatus.CLOSED) {
+            throw new BusinessRuleException("Order closed cannot receive new items");
+        }
+        if (status == OrderStatus.CANCELLED) {
+            throw new BusinessRuleException("Cancelled order cannot be changed");
+        }
+    }
+
+    private void ensureCanClose(List<OrderItem> items) {
+        if (status == OrderStatus.CLOSED) {
+            throw new BusinessRuleException("Order is already closed");
+        }
+        if (status == OrderStatus.CANCELLED) {
+            throw new BusinessRuleException("Cancelled order cannot be closed");
+        }
+        if (items.isEmpty()) {
+            throw new BusinessRuleException("Order cannot be closed without items");
+        }
+    }
+
+    private static String normalizeNullable(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

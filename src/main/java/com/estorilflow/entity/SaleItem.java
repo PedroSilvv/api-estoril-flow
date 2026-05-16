@@ -54,6 +54,17 @@ public class SaleItem {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public static SaleItem fromOrderItem(Long saleId, OrderItem item) {
+        return SaleItem.builder()
+                .saleId(saleId)
+                .productId(item.getProductId())
+                .productNameSnapshot(item.getProductNameSnapshot())
+                .unitPrice(item.getUnitPrice())
+                .quantity(item.getQuantity())
+                .subtotal(item.getSubtotal())
+                .build();
+    }
+
     @PrePersist
     void prePersist() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);

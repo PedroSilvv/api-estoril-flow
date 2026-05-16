@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.estorilflow.exceptions.BusinessRuleException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -45,6 +46,35 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public static Product create(String name, BigDecimal price) {
+        return Product.builder()
+                .name(normalizeProductName(name))
+                .price(price)
+                .active(true)
+                .build();
+    }
+
+    public void updateDetails(String name, BigDecimal price) {
+        this.name = normalizeProductName(name);
+        this.price = price;
+    }
+
+    public void activate(boolean active) {
+        this.active = active;
+    }
+
+    public void ensureActivate() {
+        if (!active) {
+            throw new BusinessRuleException("Inactive product cannot be used in orders");
+        }
+    }
+
+    public void ensureActiveForStoreCredits() {
+        if (!active) {
+            throw new BusinessRuleException("Inactive product cannot be used in store credits");
+        }
+    }
+
     @PrePersist
     void prePersist() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
@@ -55,5 +85,13 @@ public class Product {
     @PreUpdate
     void preUpdate() {
         updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+    }
+
+    private static String normalizeProductName(String name) {
+        String normalizedName = name == null ? null : name.trim();
+        if (normalizedName == null || normalizedName.isEmpty()) {
+            throw new BusinessRuleException("name is required");
+        }
+        return normalizedName;
     }
 }

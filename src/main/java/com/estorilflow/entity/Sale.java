@@ -51,6 +51,16 @@ public class Sale {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public static Sale fromClosedOrder(Order order, BigDecimal totalAmount, LocalDateTime soldAt) {
+        return Sale.builder()
+                .orderId(order.getId())
+                .totalAmount(totalAmount)
+                .soldAt(soldAt)
+                .openedByUserId(order.getOpenedByUserId())
+                .closedByUserId(order.getClosedByUserId())
+                .build();
+    }
+
     @PrePersist
     void prePersist() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);

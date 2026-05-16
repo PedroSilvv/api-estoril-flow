@@ -9,6 +9,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import lombok.AllArgsConstructor;
@@ -54,6 +55,22 @@ public class StoreCreditItem {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public static StoreCreditItem fromProduct(Product product, Integer quantity) {
+        product.ensureActiveForStoreCredits();
+
+        return StoreCreditItem.builder()
+                .productId(product.getId())
+                .productNameSnapshot(product.getName())
+                .unitPrice(product.getPrice())
+                .quantity(quantity)
+                .subtotal(calculateSubtotal(product.getPrice(), quantity))
+                .build();
+    }
+
+    public void linkToStoreCredit(Long storeCreditId) {
+        this.storeCreditId = storeCreditId;
+    }
+
     @PrePersist
     void prePersist() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
@@ -64,5 +81,11 @@ public class StoreCreditItem {
     @PreUpdate
     void preUpdate() {
         updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+    }
+
+    private static BigDecimal calculateSubtotal(BigDecimal unitPrice, Integer quantity) {
+        return unitPrice
+                .multiply(BigDecimal.valueOf(quantity.longValue()))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 }
