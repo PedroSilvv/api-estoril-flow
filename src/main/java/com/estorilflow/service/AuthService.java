@@ -1,5 +1,6 @@
 package com.estorilflow.service;
 
+import com.estorilflow.adapter.AuthResponseAdapter;
 import com.estorilflow.dto.AuthRequest;
 import com.estorilflow.dto.AuthResponse;
 import com.estorilflow.dto.AuthenticatedUserResponse;
@@ -33,30 +34,13 @@ public class AuthService {
             AuthenticatedUserDetails user = (AuthenticatedUserDetails) authentication.getPrincipal();
             JwtTokenService.TokenDetails tokenDetails = jwtTokenService.generateToken(user);
 
-            return new AuthResponse(
-                    tokenDetails.token(),
-                    "Bearer",
-                    tokenDetails.expiresIn(),
-                    tokenDetails.issuedAt(),
-                    tokenDetails.expiresAt(),
-                    toUserResponse(user)
-            );
+            return AuthResponseAdapter.toResponse(tokenDetails, user);
         } catch (BadCredentialsException | AuthenticationServiceException ex) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
     }
 
     public AuthenticatedUserResponse currentUser(AuthenticatedUserDetails user) {
-        return toUserResponse(user);
-    }
-
-    private AuthenticatedUserResponse toUserResponse(AuthenticatedUserDetails user) {
-        return new AuthenticatedUserResponse(
-                user.id(),
-                user.name(),
-                user.getUsername(),
-                user.email(),
-                user.role()
-        );
+        return AuthResponseAdapter.toUserResponse(user);
     }
 }

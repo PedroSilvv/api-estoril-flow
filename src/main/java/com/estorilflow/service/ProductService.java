@@ -1,12 +1,12 @@
 package com.estorilflow.service;
 
+import com.estorilflow.adapter.ProductResponseAdapter;
 import com.estorilflow.dto.ProductCreateRequest;
 import com.estorilflow.dto.PageResponse;
 import com.estorilflow.dto.ProductResponse;
 import com.estorilflow.dto.ProductStatusUpdateRequest;
 import com.estorilflow.dto.ProductUpdateRequest;
 import com.estorilflow.entity.Product;
-import com.estorilflow.exceptions.BusinessRuleException;
 import com.estorilflow.exceptions.ResourceNotFoundException;
 import com.estorilflow.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -26,19 +26,15 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(ProductCreateRequest request) {
-        Product product = Product.builder()
-                .name(request.name().trim())
-                .price(request.price())
-                .active(true)
-                .build();
+        Product product = Product.create(request.name(), request.price());
 
-        return toResponse(productRepository.save(product));
+        return ProductResponseAdapter.toResponse(productRepository.save(product));
     }
 
     @Transactional(readOnly = true)
     public PageResponse<ProductResponse> findAll(Pageable pageable, Boolean active) {
         Page<ProductResponse> page = productRepository.findAll(buildSpecification(active), pageable)
-                .map(this::toResponse);
+                .map(ProductResponseAdapter::toResponse);
 
         return PageResponse.from(page);
     }
@@ -56,39 +52,27 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductResponse findById(Long id) {
-        return toResponse(getProductById(id));
+        return ProductResponseAdapter.toResponse(getProductById(id));
     }
 
     @Transactional
     public ProductResponse update(Long id, ProductUpdateRequest request) {
         Product product = getProductById(id);
-        product.setName(request.name().trim());
-        product.setPrice(request.price());
+        product.updateDetails(request.name(), request.price());
 
-        return toResponse(productRepository.save(product));
+        return ProductResponseAdapter.toResponse(productRepository.save(product));
     }
 
     @Transactional
     public ProductResponse updateStatus(Long id, ProductStatusUpdateRequest request) {
         Product product = getProductById(id);
-        product.setActive(request.active());
+        product.activate(request.active());
 
-        return toResponse(productRepository.save(product));
+        return ProductResponseAdapter.toResponse(productRepository.save(product));
     }
 
     private Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
-    }
-
-    private ProductResponse toResponse(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.isActive(),
-                product.getCreatedAt(),
-                product.getUpdatedAt()
-        );
     }
 }

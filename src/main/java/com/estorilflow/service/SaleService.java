@@ -1,7 +1,7 @@
 package com.estorilflow.service;
 
+import com.estorilflow.adapter.SaleResponseAdapter;
 import com.estorilflow.dto.PageResponse;
-import com.estorilflow.dto.SaleItemResponse;
 import com.estorilflow.dto.SaleResponse;
 import com.estorilflow.dto.SaleSummaryResponse;
 import com.estorilflow.entity.Sale;
@@ -43,7 +43,7 @@ public class SaleService {
 
         Page<Sale> salePage = saleRepository.findAll(buildSpecification(orderId, startDate, endDate), pageable);
         if (salePage.isEmpty()) {
-            return PageResponse.from(salePage.map(sale -> toSaleSummaryResponse(sale, List.of())));
+            return PageResponse.from(salePage.map(sale -> SaleResponseAdapter.toSummaryResponse(sale, List.of())));
         }
 
         List<SaleItem> items = saleItemRepository.findAllBySaleIdIn(
@@ -54,7 +54,7 @@ public class SaleService {
                 .collect(Collectors.groupingBy(SaleItem::getSaleId));
 
         return PageResponse.from(salePage.map(sale
-                -> toSaleSummaryResponse(sale, itemsBySaleId.getOrDefault(sale.getId(), List.of()))));
+                -> SaleResponseAdapter.toSummaryResponse(sale, itemsBySaleId.getOrDefault(sale.getId(), List.of()))));
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +63,7 @@ public class SaleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with id " + id));
 
         List<SaleItem> items = saleItemRepository.findAllBySaleIdOrderByIdAsc(id);
-        return toSaleResponse(sale, items);
+        return SaleResponseAdapter.toResponse(sale, items);
     }
 
     private Specification<Sale> buildSpecification(Long orderId, LocalDate startDate, LocalDate endDate) {
@@ -95,49 +95,4 @@ public class SaleService {
         }
     }
 
-    private SaleSummaryResponse toSaleSummaryResponse(Sale sale, List<SaleItem> items) {
-        return new SaleSummaryResponse(
-                sale.getId(),
-                sale.getOrderId(),
-                sale.getTotalAmount(),
-                sale.getSoldAt(),
-                sale.getOpenedByUserId(),
-                sale.getClosedByUserId(),
-                items.size(),
-                sale.getCreatedAt(),
-                sale.getUpdatedAt()
-        );
-    }
-
-    private SaleResponse toSaleResponse(Sale sale, List<SaleItem> items) {
-        List<SaleItemResponse> itemResponses = items.stream()
-                .map(this::toSaleItemResponse)
-                .toList();
-
-        return new SaleResponse(
-                sale.getId(),
-                sale.getOrderId(),
-                sale.getTotalAmount(),
-                sale.getSoldAt(),
-                sale.getOpenedByUserId(),
-                sale.getClosedByUserId(),
-                itemResponses.size(),
-                sale.getCreatedAt(),
-                sale.getUpdatedAt(),
-                itemResponses
-        );
-    }
-
-    private SaleItemResponse toSaleItemResponse(SaleItem item) {
-        return new SaleItemResponse(
-                item.getId(),
-                item.getProductId(),
-                item.getProductNameSnapshot(),
-                item.getUnitPrice(),
-                item.getQuantity(),
-                item.getSubtotal(),
-                item.getCreatedAt(),
-                item.getUpdatedAt()
-        );
-    }
 }
