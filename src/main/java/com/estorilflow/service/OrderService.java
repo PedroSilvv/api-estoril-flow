@@ -4,6 +4,7 @@ import com.estorilflow.adapter.OrderResponseAdapter;
 import com.estorilflow.dto.OrderCreateRequest;
 import com.estorilflow.dto.OrderItemCreateRequest;
 import com.estorilflow.dto.OrderItemUpdateRequest;
+import com.estorilflow.dto.OrderItemsCreateRequest;
 import com.estorilflow.dto.OrderResponse;
 import com.estorilflow.dto.OrderSummaryResponse;
 import com.estorilflow.dto.OrderUpdateRequest;
@@ -169,6 +170,25 @@ public class OrderService {
     }
 
     @Transactional
+    public OrderResponse addItems(Long orderId, OrderItemsCreateRequest request) {
+        Order order = getOrderById(orderId);
+        order.ensureCanChangeItems();
+
+        if (request.items() == null || request.items().isEmpty()) {
+            throw new BusinessRuleException("items is required");
+        }
+
+        Map<Long, Product> productsById = findProductsById(request.items());
+        List<OrderItem> itemsToSave = request.items().stream()
+                .map(itemRequest -> order.createItem(productsById.get(itemRequest.productId()), itemRequest.quantity()))
+                .toList();
+
+        orderItemRepository.saveAll(itemsToSave);
+        List<OrderItem> items = orderItemRepository.findAllByOrderIdOrderByIdAsc(order.getId());
+        return OrderResponseAdapter.toResponse(order, items);
+    }
+
+    @Transactional
     public OrderResponse updateItem(Long orderId, Long itemId, OrderItemUpdateRequest request) {
         Order order = getOrderById(orderId);
         order.ensureCanChangeItems();
@@ -225,6 +245,24 @@ public class OrderService {
     private Product getProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+    }
+
+    private Map<Long, Product> findProductsById(List<OrderItemCreateRequest> itemRequests) {
+        List<Long> productIds = itemRequests.stream()
+                .map(OrderItemCreateRequest::productId)
+                .distinct()
+                .toList();
+
+        Map<Long, Product> productsById = productRepository.findAllById(productIds).stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
+
+        productIds.forEach(productId -> {
+            if (!productsById.containsKey(productId)) {
+                throw new ResourceNotFoundException("Product not found with id " + productId);
+            }
+        });
+
+        return productsById;
     }
 
     private String generateCode() {

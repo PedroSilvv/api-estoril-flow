@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.estorilflow.dto.PageResponse;
 import com.estorilflow.dto.OrderCreateRequest;
 import com.estorilflow.dto.OrderItemCreateRequest;
+import com.estorilflow.dto.OrderItemsCreateRequest;
 import com.estorilflow.dto.OrderResponse;
 import com.estorilflow.dto.OrderUpdateRequest;
 import com.estorilflow.entity.Order;
@@ -162,6 +163,36 @@ class OrderServiceTest {
         assertThat(response.totalAmount()).isEqualByComparingTo("51.80");
         assertThat(response.items().getFirst().productNameSnapshot()).isEqualTo("Caipirinha");
         assertThat(response.items().getFirst().subtotal()).isEqualByComparingTo("51.80");
+    }
+
+    @Test
+    void shouldAddMultipleItemsUsingCurrentProductSnapshots() {
+        Order order = order(2L, "ORD-XYZ12345", null, OrderStatus.OPEN, 7L, null, now(), null, null, now(), now());
+        Product firstProduct = product(10L, "Caipirinha", "25.90", true);
+        Product secondProduct = product(11L, "Suco", "12.50", true);
+        OrderItem firstItem = orderItem(20L, 2L, 10L, "Caipirinha", "25.90", 2, "51.80");
+        OrderItem secondItem = orderItem(21L, 2L, 11L, "Suco", "12.50", 1, "12.50");
+
+        when(orderRepository.findById(2L)).thenReturn(Optional.of(order));
+        when(productRepository.findAllById(List.of(10L, 11L))).thenReturn(List.of(firstProduct, secondProduct));
+        when(orderItemRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(orderItemRepository.findAllByOrderIdOrderByIdAsc(2L)).thenReturn(List.of(firstItem, secondItem));
+
+        OrderResponse response = orderService.addItems(2L, new OrderItemsCreateRequest(List.of(
+                new OrderItemCreateRequest(10L, 2),
+                new OrderItemCreateRequest(11L, 1)
+        )));
+
+        assertThat(response.itemCount()).isEqualTo(2);
+        assertThat(response.totalAmount()).isEqualByComparingTo("64.30");
+        assertThat(response.items()).extracting(com.estorilflow.dto.OrderItemResponse::productNameSnapshot)
+                .containsExactly("Caipirinha", "Suco");
+
+        ArgumentCaptor<List<OrderItem>> itemsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(orderItemRepository).saveAll(itemsCaptor.capture());
+        assertThat(itemsCaptor.getValue()).hasSize(2);
+        assertThat(itemsCaptor.getValue().getFirst().getSubtotal()).isEqualByComparingTo("51.80");
+        assertThat(itemsCaptor.getValue().get(1).getSubtotal()).isEqualByComparingTo("12.50");
     }
 
     @Test

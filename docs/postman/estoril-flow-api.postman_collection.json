@@ -1194,6 +1194,76 @@
                                                    ]
                                   },
                                   {
+                                      "name":  "Add Order Items Batch",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/batch",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "orders",
+                                                                               "{{orderId}}",
+                                                                               "items",
+                                                                               "batch"
+                                                                           ]
+                                                              },
+                                                      "description":  "Adiciona multiplos itens em uma unica request, usando snapshot atual dos produtos."
+                                                  },
+                                      "response":  [
+                                                       {
+                                                           "name":  "200 OK",
+                                                           "originalRequest":  {
+                                                                                   "method":  "POST",
+                                                                                   "header":  [
+                                                                                                  {
+                                                                                                      "key":  "Content-Type",
+                                                                                                      "value":  "application/json"
+                                                                                                  }
+                                                                                              ],
+                                                                                   "body":  {
+                                                                                                "mode":  "raw",
+                                                                                                "raw":  "{\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}"
+                                                                                            },
+                                                                                   "url":  {
+                                                                                               "raw":  "{{baseUrl}}/api/orders/{{orderId}}/items/batch",
+                                                                                               "host":  [
+                                                                                                            "{{baseUrl}}"
+                                                                                                        ],
+                                                                                               "path":  [
+                                                                                                            "api",
+                                                                                                            "orders",
+                                                                                                            "{{orderId}}",
+                                                                                                            "items",
+                                                                                                            "batch"
+                                                                                                        ]
+                                                                                           }
+                                                                               },
+                                                           "status":  "OK",
+                                                           "code":  200,
+                                                           "header":  [
+                                                                          {
+                                                                              "key":  "Content-Type",
+                                                                              "value":  "application/json"
+                                                                          }
+                                                                      ],
+                                                           "body":  "{\n  \"id\": 1,\n  \"code\": \"ORD-A1B2C3D4\",\n  \"customerNameOrLabel\": \"Mesa 12\",\n  \"status\": \"OPEN\",\n  \"openedByUserId\": null,\n  \"closedByUserId\": null,\n  \"openedAt\": \"2026-04-17T06:20:00\",\n  \"closedAt\": null,\n  \"notes\": \"Sem gelo\",\n  \"itemCount\": 2,\n  \"totalAmount\": 24.20,\n  \"createdAt\": \"2026-04-17T06:20:00\",\n  \"updatedAt\": \"2026-04-17T06:20:00\",\n  \"items\": [\n    {\n      \"id\": 1,\n      \"productId\": 1,\n      \"productNameSnapshot\": \"Agua\",\n      \"unitPrice\": 5.00,\n      \"quantity\": 2,\n      \"subtotal\": 10.00,\n      \"createdAt\": \"2026-04-17T06:22:00\",\n      \"updatedAt\": \"2026-04-17T06:22:00\"\n    },\n    {\n      \"id\": 2,\n      \"productId\": 2,\n      \"productNameSnapshot\": \"Suco\",\n      \"unitPrice\": 14.20,\n      \"quantity\": 1,\n      \"subtotal\": 14.20,\n      \"createdAt\": \"2026-04-17T06:23:00\",\n      \"updatedAt\": \"2026-04-17T06:23:00\"\n    }\n  ]\n}"
+                                                       }
+                                                   ]
+                                  },
+                                  {
                                       "name":  "Update Order Item",
                                       "request":  {
                                                       "method":  "PUT",

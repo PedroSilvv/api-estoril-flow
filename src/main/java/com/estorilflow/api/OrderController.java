@@ -3,6 +3,7 @@ package com.estorilflow.api;
 import com.estorilflow.dto.OrderCreateRequest;
 import com.estorilflow.dto.OrderItemCreateRequest;
 import com.estorilflow.dto.OrderItemUpdateRequest;
+import com.estorilflow.dto.OrderItemsCreateRequest;
 import com.estorilflow.dto.PageResponse;
 import com.estorilflow.dto.OrderResponse;
 import com.estorilflow.dto.OrderSummaryResponse;
@@ -90,6 +91,15 @@ public class OrderController {
     ) {
         log.info("Received request to add item {}", request);
         return ResponseEntity.ok(orderService.addItem(id, request));
+    }
+
+    @PostMapping("/{id}/items/batch")
+    public ResponseEntity<OrderResponse> addItems(
+            @PathVariable Long id,
+            @Valid @RequestBody final OrderItemsCreateRequest request
+    ) {
+        log.info("Received request to add items {}", request);
+        return ResponseEntity.ok(orderService.addItems(id, request));
     }
 
     @PutMapping("/{id}/items/{itemId}")
