@@ -8,9 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.estorilflow.support.ApplicationClock;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,13 +63,13 @@ public class Sale {
 
     @PrePersist
     void prePersist() {
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime now = ApplicationClock.now();
         createdAt = now;
         updatedAt = now;
     }
 
     @PreUpdate
     void preUpdate() {
-        updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+        updatedAt = ApplicationClock.now();
     }
 }

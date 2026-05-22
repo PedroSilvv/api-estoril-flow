@@ -12,6 +12,8 @@ import com.estorilflow.service.OrderService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -85,6 +88,7 @@ public class OrderController {
             @PathVariable Long id,
             @Valid @RequestBody OrderItemCreateRequest request
     ) {
+        log.info("Received request to add item {}", request);
         return ResponseEntity.ok(orderService.addItem(id, request));
     }
 

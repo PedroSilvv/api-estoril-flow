@@ -11,10 +11,10 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import com.estorilflow.exceptions.BusinessRuleException;
+import com.estorilflow.support.ApplicationClock;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -136,14 +136,14 @@ public class Order {
 
     @PrePersist
     void prePersist() {
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime now = ApplicationClock.now();
         createdAt = now;
         updatedAt = now;
     }
 
     @PreUpdate
     void preUpdate() {
-        updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+        updatedAt = ApplicationClock.now();
     }
 
     private void ensureOpenForModification() {

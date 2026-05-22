@@ -21,9 +21,9 @@ import com.estorilflow.repository.OrderRepository;
 import com.estorilflow.repository.ProductRepository;
 import com.estorilflow.repository.SaleItemRepository;
 import com.estorilflow.repository.SaleRepository;
+import com.estorilflow.support.ApplicationClock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -64,7 +64,7 @@ public class OrderService {
                 request.customerNameOrLabel(),
                 openedByUserId,
                 request.notes(),
-                LocalDateTime.now(ZoneOffset.UTC)
+                ApplicationClock.now()
         );
 
         Order savedOrder = orderRepository.save(order);
@@ -204,7 +204,7 @@ public class OrderService {
         Order order = getOrderById(orderId);
 
         List<OrderItem> items = orderItemRepository.findAllByOrderIdOrderByIdAsc(orderId);
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime now = ApplicationClock.now();
         Sale sale = order.close(items, closedByUserId, now);
 
         Sale savedSale = saleRepository.save(sale);
